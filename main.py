@@ -13,6 +13,8 @@ import torchvision
 from torchvision.datasets import ImageFolder
 from torchvision import transforms
 
+from pacs_dataset import PACS
+
 from PIL import Image
 from tqdm import tqdm
 
@@ -31,10 +33,7 @@ transformation = transforms.Compose([ transforms.Resize(230),
                                       transforms.ToTensor(),
                                       transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)) # Normalizes tensor with mean and standard deviation of IMAGENET
 ])
-
 PACS_PATH = 'Homework3-PACS/PACS/'
+pacs = PACS(root=PACS_PATH, transform=transformation, num_workers=4) # add batch size
 
-art_painting_dataset=ImageFolder(PACS_PATH + 'art_painting',transform=transformation)
-cartoon_dataset=ImageFolder(PACS_PATH + 'cartoon',transform=transformation)
-photo_dataset=ImageFolder(PACS_PATH + 'photo',transform=transformation)
-sketch_dataset=ImageFolder(PACS_PATH + 'sketch',transform=transformation)
+

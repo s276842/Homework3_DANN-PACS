@@ -49,10 +49,25 @@ class PACS():
             pass
 
 
-    def load(self, cat):
-        for batch in self.dic[cat.lower()]:
-            yield batch
+    # def load(self, cat):
+    #     for batch in self.dic[cat.lower()]:
+    #         yield batch
 
+    def __next__(self):
+        try:
+            return self.__curr_iter.__next__()
+        except:
+            return []
+
+    def __iter__(self):
+        try:
+            return self.__curr_iter.__iter__()
+        except:
+            return []
+
+    def __call__(self, cat):
+        self.__curr_iter = self.dic.get(cat.lower())
+        return self
 
 
 if __name__ == '__main__':
@@ -67,9 +82,9 @@ if __name__ == '__main__':
     pacs = PACS('Homework3-PACS\PACS', transform=train_transform, batch_size=512, num_workers=4)
     # print(pacs['A',-1])
 
-    # print(pacs.get_next_batch('art'))
+    print(pacs.get_next_batch('art')[1])
     import matplotlib.pyplot as plt
-    for batch in pacs.load('cartoon'):
+    for batch in pacs('cartoon'):
         plt.imshow(batch[0][0].permute(1,2,0))
         plt.show()
         print(pacs.classes[batch[1][0]])
