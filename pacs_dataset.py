@@ -3,6 +3,13 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 
 import os
+import matplotlib.pyplot as plt
+
+def print_photo(batch):
+    plt.imshow(batch[0][0].permute(1,2,0))
+    plt.show()
+    print(batch[1][0])
+
 class PACS():
     def __init__(self, root, transform=None, batch_size=64, num_workers=0):
 
@@ -34,8 +41,10 @@ class PACS():
 
 
     def __getitem__(self, item):
+        # calling PACS['category'][index] will raise TypeError since DataLoader is not subsriptable
+        # call PACS['category', index] to retrieve an image with corresponding label
         if type(item) is str:
-            return self.dic.get(item[0].lower()).dataset
+            return self.dic.get(item[0].lower())#.dataset
         if type(item) is tuple:
             try:
                 return self.dic.get(item[0].lower()).dataset.__getitem__(item[1])
@@ -79,12 +88,12 @@ if __name__ == '__main__':
     train_transform = transforms.Compose([transforms.Resize(256),transforms.CenterCrop(224),transforms.ToTensor(),transforms.Normalize(imgnet_mean, imgnet_std)])
 
 
-    pacs = PACS('Homework3-PACS\PACS', transform=train_transform, batch_size=512, num_workers=4)
+    pacs = PACS('Homework3-PACS\PACS', transform=train_transform, batch_size=32, num_workers=4)
     # print(pacs['A',-1])
 
     print(pacs.get_next_batch('art')[1])
     import matplotlib.pyplot as plt
-    for batch in pacs('cartoon'):
-        plt.imshow(batch[0][0].permute(1,2,0))
-        plt.show()
-        print(pacs.classes[batch[1][0]])
+    # for batch in pacs('cartoon'):
+    #     plt.imshow(batch[0][0].permute(1,2,0))
+    #     plt.show()
+    #     print(pacs.classes[batch[1][0]])
